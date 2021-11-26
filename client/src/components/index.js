@@ -8,6 +8,7 @@ import SplashScreen from './SplashScreen'
 import Top5Item from './Top5Item'
 import WorkspaceScreen from './WorkspaceScreen'
 import DeleteModal from './DeleteModal'
+import ListToolBar from './ListToolBar'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -24,4 +25,5 @@ export {
     SplashScreen,
     Top5Item, 
     WorkspaceScreen,
-    DeleteModal }
+    DeleteModal,
+    ListToolBar }

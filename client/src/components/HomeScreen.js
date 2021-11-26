@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import { Fab, Typography } from '@mui/material'
+import { IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
+import ListToolBar from './ListToolBar';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -37,7 +38,8 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
-            
+            <ListToolBar/>
+
             <div id="list-selector-list">
                 {
                     listCard
@@ -45,15 +47,13 @@ const HomeScreen = () => {
             </div>
 
             <div id="list-selector-heading">
-            <Fab 
-                color="primary" 
-                aria-label="add"
+            <IconButton 
                 id="add-list-button"
                 onClick={handleCreateNewList}
             >
-                <AddIcon />
-            </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                <AddIcon sx={{ fontSize: 75, color: 'black'}}/>
+            </IconButton>
+                <Typography variant="h3">Your Lists</Typography>
             </div>
 
         </div>)

@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import Avatar from '@mui/material/Avatar';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -74,8 +75,10 @@ export default function AppBanner() {
     }
     
     function getAccountMenu(loggedIn) {
-        if(loggedIn)
-            return (auth.user.firstName.charAt(0).toUpperCase() + auth.user.lastName.charAt(0).toUpperCase())
+        if(loggedIn){
+            let name = (auth.user.firstName.charAt(0).toUpperCase() + auth.user.lastName.charAt(0).toUpperCase());
+            return <Avatar sx={{ bgcolor: "#c130ca", color: "black", border: '1px solid black' }}>{name}</Avatar>;
+        }
         else
             return <AccountCircle />;
     }
@@ -86,7 +89,7 @@ export default function AppBanner() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" style={{ background: '#e0e0e0' }}>
                 <Toolbar>
                     <Typography                        
                         variant="h4"
@@ -95,7 +98,7 @@ export default function AppBanner() {
                         sx={{ display: { xs: 'none', sm: 'block', }, flex: 1}} 
                                             
                     >
-                        <Link onClick={handleHomePage}style={{ textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
+                        <Link onClick={handleHomePage}style={{ textDecoration: 'none', color: '#d5b341' }} to='/'>T<sup>5</sup>L</Link>
                     </Typography>
                     
                     <Box >

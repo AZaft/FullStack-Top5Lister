@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useContext, useState } from "react";
 import { useHistory } from 'react-router-dom'
 import api from '../api'
+import { GlobalStoreContext } from '../store'
 
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
@@ -70,6 +71,7 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 });
+                
             }
         } catch(err){
 
@@ -86,8 +88,7 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-            history.push("/");
-            store.loadIdNamePairs();
+            history.push("/home");
         }
 
         } catch(err){
@@ -108,7 +109,7 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-            history.push("/");
+            history.push("/home");
             store.loadIdNamePairs();
         } 
 

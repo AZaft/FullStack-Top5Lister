@@ -20,8 +20,6 @@ const style = {
   background : '#2E3B55'
 };
 
-
-
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,

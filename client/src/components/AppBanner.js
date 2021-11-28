@@ -98,7 +98,7 @@ export default function AppBanner() {
                         sx={{ display: { xs: 'none', sm: 'block', }, flex: 1}} 
                                             
                     >
-                        <Link onClick={handleHomePage}style={{ textDecoration: 'none', color: '#d5b341' }} to='/'>T<sup>5</sup>L</Link>
+                        <Link onClick={handleHomePage}style={{ textDecoration: 'none', color: '#d5b341' }} to='/home'>T<sup>5</sup>L</Link>
                     </Typography>
                     
                     <Box >

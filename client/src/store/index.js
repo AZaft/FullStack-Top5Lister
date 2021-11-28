@@ -3,12 +3,6 @@ import { useHistory } from 'react-router-dom'
 import api from '../api'
 
 import AuthContext from '../auth'
-/*
-    This is our global data store. Note that it uses the Flux design pattern,
-    which makes use of things like actions and reducers. 
-    
-    @author McKilla Gorilla
-*/
 
 // THIS IS THE CONTEXT WE'LL USE TO SHARE OUR STORE
 export const GlobalStoreContext = createContext({});
@@ -202,7 +196,7 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         
-        history.push("/");
+        history.push("/home");
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -277,11 +271,11 @@ function GlobalStoreContextProvider(props) {
             let response = await api.deleteTop5ListById(listToDelete._id);
             if (response.data.success) {
                 store.loadIdNamePairs();
-                history.push("/");
+                history.push("/home");
             }
         }catch(err){
             store.loadIdNamePairs();
-            history.push("/");
+            history.push("/home");
         }
     }
 

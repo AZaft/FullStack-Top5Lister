@@ -6,18 +6,13 @@ import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import ListToolBar from './ListToolBar';
 
-/*
-    This React component lists all the top5 lists in the UI.
-    
-    @author McKilla Gorilla
-*/
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
 
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
-
+    
     function handleCreateNewList() {
         store.createNewList();
     }

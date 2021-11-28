@@ -1,122 +1,122 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import ListItem from '@mui/material/ListItem';
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteModal from './DeleteModal'
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Button from '@mui/material/Button';
+import DeleteModal from './DeleteModal';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+
+
+
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
 
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { idNamePair } = props;
-    const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState(idNamePair.name);
-    
+    const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
-    
-    function handleLoadList(event, id) {
-        if (!event.target.disabled) {
-            // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-        }
-    }
 
-    function handleToggleEdit(event) {
-        event.stopPropagation();
-        toggleEdit();
-    }
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+        
 
-    function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
-        }
-        setEditActive(newActive);
-    }
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
-        store.markListForDeletion(id);
         setOpen(true);
         store.markListForDeletion(id);
     }
 
-    function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
-        }
-    }
-    function handleUpdateText(event) {
-        setText(event.target.value);
-    }
 
-    let cardStatus = false;
-    if (store.isListNameEditActive) {
-        cardStatus = true;
-    }
-
-    let cardElement =
-        <ListItem
-            disabled = {cardStatus}
-            id={idNamePair._id}
-            key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            button
-            onClick={(event) => {
-                if(!open)
-                    handleLoadList(event, idNamePair._id)
-            }
-            }
-            style={{
-                fontSize: '48pt',
-                width: '100%'
-            }}
-        >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton disabled = {cardStatus} onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton disabled = {cardStatus} onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-                <DeleteModal 
+    return (
+        <Card >
+            <DeleteModal 
                     open={open}
                     setOpen={setOpen}
                     listName={idNamePair.name}
-                />
-        </ListItem>
+            />
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Top 5 List Name"
-                name="name"
-                autoComplete="Top 5 List Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />      
-    }
-    return (
-        cardElement
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: "8px"
+            }}>
+
+                <Typography ml = "0.6vw" variant="h4" style={{ flex: 1 }}>
+                    {idNamePair.name} 
+                </Typography>
+
+                <IconButton sx={{ mr: "3vw" }}>
+                    <ThumbUpOutlinedIcon fontSize="large"/>
+                </IconButton>
+                <IconButton sx={{ mr: "3vw" }}>
+                    <ThumbDownOutlinedIcon fontSize="large"/>
+                </IconButton>
+
+                <IconButton onClick={(event) => {
+                    if(!open)
+                        handleDeleteList(event, idNamePair._id)
+                    }}>
+                    <DeleteForeverOutlinedIcon fontSize="large"/>
+                </IconButton>
+            </div>
+            
+
+            <Typography ml = "1.2vw">
+                By:
+            </Typography>
+            
+            <CardActions>
+                <Button size="small" color="error" sx={{ mr: "50vw" }}>
+                    Edit
+                </Button>
+                
+                
+
+                <Typography style={{ flex: 1 }}>
+                    Views: 
+                </Typography>
+
+                <ExpandMore
+                    expand={expanded}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+
+                >   
+                        <ExpandMoreIcon fontSize="large"/>
+                </ExpandMore>
+            </CardActions>
+            
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+               
+                    <Typography paragraph>
+                        Test
+                    </Typography>
+               
+            </Collapse>
+        </Card>
     );
 }
 

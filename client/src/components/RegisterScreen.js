@@ -53,7 +53,7 @@ export default function RegisterScreen() {
             email: formData.get('email'),
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
-        }, store)
+        })
             .then(setMessage(""), handleClose())
             .catch(error => setMessage(error.message), handleOpen());
         

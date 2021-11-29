@@ -5,12 +5,11 @@ import { AuthContextProvider } from './auth';
 import { GlobalStoreContextProvider } from './store'
 import {
     AppBanner,
-    HomeWrapper,
     RegisterScreen,
     WorkspaceScreen,
     LoginScreen,
     SplashScreen,
-    HomeScreen
+    HomeScreen,
 } from './components'
 
 const App = () => {

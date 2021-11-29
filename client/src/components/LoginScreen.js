@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
@@ -53,7 +53,7 @@ export default function LoginScreen() {
         auth.loginUser({
             email: data.get('email'),
             password: data.get('password'),
-        }, store)
+        })
             .then(setMessage(""), handleClose())
             .catch(error => setMessage(error.message), handleOpen())
     };

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth'
 import ListCard from './ListCard.js'
 import { IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
@@ -8,8 +9,10 @@ import ListToolBar from './ListToolBar';
 
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
-    useEffect(() => {
+    useEffect(async () => {
+        let response = await auth.getLoggedIn();
         store.loadIdNamePairs();
     }, []);
     

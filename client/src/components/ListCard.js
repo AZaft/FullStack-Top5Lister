@@ -12,6 +12,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import DeleteModal from './DeleteModal';
+import { useHistory } from 'react-router-dom'
 
 
 
@@ -31,10 +32,16 @@ function ListCard(props) {
     const { idNamePair } = props;
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
+    const history = useHistory();
 
     const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
         store.setCurrentList(id);
+    };
+
+    const handleEditList = (event, id) => {
+        store.setCurrentList(id);
+        history.push("/top5list/" + id);
     };
         
 
@@ -113,7 +120,7 @@ function ListCard(props) {
             </Collapse>
 
             <CardActions>
-                <Button size="small" color="error" sx={{ mr: "50vw" }}>
+                <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, idNamePair._id)}} >
                     Edit
                 </Button>
                 

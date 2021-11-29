@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useContext, useState } from "react";
 import { useHistory } from 'react-router-dom'
 import api from '../api'
-import { GlobalStoreContext } from '../store'
 
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
@@ -61,7 +60,6 @@ function AuthContextProvider(props) {
     }
 
     auth.getLoggedIn = async function () {
-        try{
             const response = await api.getLoggedIn();
             if (response.status === 200) {
                 authReducer({
@@ -71,14 +69,10 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 });
-                
             }
-        } catch(err){
-
-        }
     }
 
-    auth.registerUser = async function(userData, store) {
+    auth.registerUser = async function(userData) {
         try{
             const response = await api.registerUser(userData);      
             if (response.status === 200) {
@@ -98,7 +92,7 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.loginUser = async function(userData, store) {
+    auth.loginUser = async function(userData) {
 
         try{
             const response = await api.loginUser(userData);      
@@ -110,7 +104,6 @@ function AuthContextProvider(props) {
                 }
             })
             history.push("/home");
-            store.loadIdNamePairs();
         } 
 
         }catch(err){

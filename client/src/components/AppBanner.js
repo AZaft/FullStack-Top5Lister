@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
 import AppBar from '@mui/material/AppBar';
@@ -11,10 +12,13 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Avatar from '@mui/material/Avatar';
 
+
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    const { store } = useContext(GlobalStoreContext);
+    
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -29,6 +33,7 @@ export default function AppBanner() {
         auth.logoutUser();
     }
 
+    
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
         <Menu
@@ -84,7 +89,7 @@ export default function AppBanner() {
     }
 
     function handleHomePage() {
-        
+        store.loadIdNamePairs();
     }
 
     return (

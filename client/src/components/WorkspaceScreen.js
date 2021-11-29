@@ -12,13 +12,12 @@ function WorkspaceScreen() {
     
     window.onload  = function() {
         history.push("/home");
-        store.loadIdNamePairs();
     }
 
     let editItems = "";
     if (store.currentList) {
         editItems = 
-            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <List id="edit-items" sx={{ bgcolor: 'background.paper' }}>
                 {
                     store.currentList.items.map((item, index) => (
                         <Top5Item 
@@ -32,16 +31,14 @@ function WorkspaceScreen() {
     }
     return (
         <div id="top5-workspace">
-            <div id="workspace-edit">
-                <div id="edit-numbering">
-                    <div className="item-number"><Typography variant="h3">1.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">2.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">3.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">4.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">5.</Typography></div>
-                </div>
-                {editItems}
+            <div id="edit-numbering">
+                <div className="item-number"><Typography variant="h3">1.</Typography></div>
+                <div className="item-number"><Typography variant="h3">2.</Typography></div>
+                <div className="item-number"><Typography variant="h3">3.</Typography></div>
+                <div className="item-number"><Typography variant="h3">4.</Typography></div>
+                <div className="item-number"><Typography variant="h3">5.</Typography></div>
             </div>
+            {editItems}
         </div>
     )
 }

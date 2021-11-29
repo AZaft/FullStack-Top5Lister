@@ -2,20 +2,16 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-import DeleteModal from './DeleteModal';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import DeleteModal from './DeleteModal';
 
 
 
@@ -36,8 +32,9 @@ function ListCard(props) {
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
 
-    const handleExpandClick = () => {
+    const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
+        store.setCurrentList(id);
     };
         
 
@@ -49,8 +46,28 @@ function ListCard(props) {
     }
 
 
+    let itemCards = "";
+    if(store.currentList){
+        let items = store.currentList.items;
+        itemCards =
+        <div style={{
+            backgroundColor: "#2c2f70",
+            borderRadius: "10px",
+            marginLeft: "1.2vw",
+            width: "50%"
+        }}>
+            <Typography variant="h3" color = "#c8a53b">1. {items[0]}</Typography>
+            <Typography variant="h3" color = "#c8a53b">2. {items[1]}</Typography>
+            <Typography variant="h3" color = "#c8a53b">3. {items[2]}</Typography>
+            <Typography variant="h3" color = "#c8a53b">4. {items[3]}</Typography>
+            <Typography variant="h3" color = "#c8a53b">5. {items[4]}</Typography>
+        </div>
+    }
+    
+    
+
     return (
-        <Card >
+        <Card  style={{backgroundColor: "#d4d4f5", borderRadius: "10px", marginBottom: "10px"}} >
             <DeleteModal 
                     open={open}
                     setOpen={setOpen}
@@ -87,6 +104,14 @@ function ListCard(props) {
                 By:
             </Typography>
             
+            
+            
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+               
+                {itemCards}
+               
+            </Collapse>
+
             <CardActions>
                 <Button size="small" color="error" sx={{ mr: "50vw" }}>
                     Edit
@@ -100,7 +125,7 @@ function ListCard(props) {
 
                 <ExpandMore
                     expand={expanded}
-                    onClick={handleExpandClick}
+                    onClick={ (event) => {handleExpandClick(event, idNamePair._id)}}
                     aria-expanded={expanded}
                     aria-label="show more"
 
@@ -108,14 +133,6 @@ function ListCard(props) {
                         <ExpandMoreIcon fontSize="large"/>
                 </ExpandMore>
             </CardActions>
-            
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-               
-                    <Typography paragraph>
-                        Test
-                    </Typography>
-               
-            </Collapse>
         </Card>
     );
 }

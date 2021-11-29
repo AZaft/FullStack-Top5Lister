@@ -49,6 +49,7 @@ export default function RegisterScreen() {
         auth.registerUser({
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
+            userName: formData.get("userName"),
             email: formData.get('email'),
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
@@ -114,6 +115,18 @@ export default function RegisterScreen() {
                                 autoComplete="lname"
                             />
                         </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="userName"
+                                label="Username"
+                                name="userName"
+                                autoComplete="userName"
+                            />
+                        </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 required
@@ -124,6 +137,7 @@ export default function RegisterScreen() {
                                 autoComplete="email"
                             />
                         </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 required

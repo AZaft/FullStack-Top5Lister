@@ -47,13 +47,12 @@ function Top5Item(props) {
                     className={itemClass}
                     sx={{ display: 'flex', p: 1 }}
                     style={{
-                        fontSize: '48pt',
-                        width: '100%'
+                        
                     }}
                 >
                 <Box sx={{ p: 1 }}>
                     <IconButton disabled={store.isItemEditActive} onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}}  />
+                        <EditIcon style={{}}  />
                     </IconButton>
                 </Box>
                     <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>

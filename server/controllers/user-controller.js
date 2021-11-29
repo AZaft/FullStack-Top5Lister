@@ -10,6 +10,7 @@ getLoggedIn = async (req, res) => {
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
+                userName: savedUser.userName,
                 email: loggedInUser.email
             }
         }).send();
@@ -26,8 +27,8 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { firstName, lastName, userName, email, password, passwordVerify } = req.body;
+        if (!firstName || !lastName || !userName|| !email || !password || !passwordVerify) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -56,12 +57,23 @@ registerUser = async (req, res) => {
                 })
         }
 
+        const existingUserName = await User.findOne({ userName: userName });
+
+        if (existingUserName) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this user name already exists."
+                })
+        }
+
         const saltRounds = 10;
         const passwordSalt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, passwordSalt);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            firstName, lastName, userName, email, passwordHash
         });
         const savedUser = await newUser.save();
 
@@ -77,6 +89,7 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
+                userName: savedUser.userName,
                 email: savedUser.email
             }
         }).send();
@@ -116,6 +129,7 @@ loginUser = async (req, res) => {
                     user: {
                         firstName: existingUser.firstName,
                         lastName: existingUser.lastName,
+                        userName: existingUser.userName,
                         email: existingUser.email
                     }
                 }).send();

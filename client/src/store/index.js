@@ -290,10 +290,7 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
-    // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
-    // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
-    // moveItem, updateItem, updateCurrentList, undo, and redo
+    
     store.setCurrentList = async function (id) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
@@ -305,7 +302,7 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: top5List
                     });
-                    history.push("/top5list/" + top5List._id);
+                    //history.push("/top5list/" + top5List._id);
                 }
             }
         }

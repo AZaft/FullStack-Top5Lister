@@ -109,33 +109,26 @@ getTop5Lists = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getTop5ListPairs = async (req, res) => {
-    await Top5List.find({ }, (err, top5Lists) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        if (!top5Lists) {
-            console.log("!top5Lists.length");
-            return res
-                .status(404)
-                .json({ success: false, error: 'Top 5 Lists not found' })
-        }
-        else {
-            // PUT ALL THE LISTS INTO ID, NAME PAIRS
-            let pairs = [];
-            for (let key in top5Lists) {
-                let list = top5Lists[key];
-                let pair = {
-                    _id: list._id,
-                    name: list.name,
-                    email: list.ownerEmail
-                };
-                pairs.push(pair);
-                
+getTop5ListsByUser = async (req, res) => {
+    async function asyncFindList(user) {
+        console.log("find all Top5Lists owned by " + user);
+        await Top5List.find({ user: user }, (err, top5Lists) => {
+            console.log("found Top5Lists: " + top5Lists);
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
             }
-            return res.status(200).json({ success: true, idNamePairs: pairs })
-        }
-    }).catch(err => console.log(err))
+            if (!top5Lists) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: 'Top 5 Lists not found' })
+            }
+            else {
+                console.log(top5Lists)
+                return res.status(200).json({ success: true, top5Lists: top5Lists })
+            }
+        }).catch(err => console.log(err))
+    }
+    asyncFindList(req.params.user);
 }
 
 module.exports = {
@@ -143,6 +136,6 @@ module.exports = {
     updateTop5List,
     deleteTop5List,
     getTop5Lists,
-    getTop5ListPairs,
+    getTop5ListsByUser,
     getTop5ListById
 }

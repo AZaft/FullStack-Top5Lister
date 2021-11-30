@@ -29,7 +29,7 @@ const ExpandMore = styled((props) => {
 
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const { idNamePair } = props;
+    const { top5list } = props;
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
     const history = useHistory();
@@ -78,7 +78,7 @@ function ListCard(props) {
             <DeleteModal 
                     open={open}
                     setOpen={setOpen}
-                    listName={idNamePair.name}
+                    listName={top5list.name}
             />
 
             <div style={{
@@ -88,24 +88,24 @@ function ListCard(props) {
             }}>
 
                 <Typography ml = "0.6vw" variant="h4" style={{ flex: 1 }}>
-                    {idNamePair.name} 
+                    {top5list.name} 
                 </Typography>
 
                 <IconButton>
                     <ThumbUpOutlinedIcon fontSize="large"/>
                 </IconButton>
 
-                <Typography sx={{ mr: "3vw" }}> {idNamePair.likes} </Typography>
+                <Typography sx={{ mr: "3vw" }}> {top5list.likes} </Typography>
 
                 <IconButton>
                     <ThumbDownOutlinedIcon fontSize="large"/>
                 </IconButton>
 
-                <Typography sx={{ mr: "3vw" }}> {idNamePair.dislikes} </Typography>
+                <Typography sx={{ mr: "3vw" }}> {top5list.dislikes} </Typography>
 
                 <IconButton onClick={(event) => {
                     if(!open)
-                        handleDeleteList(event, idNamePair._id)
+                        handleDeleteList(event, top5list._id)
                     }}>
                     <DeleteForeverOutlinedIcon fontSize="large"/>
                 </IconButton>
@@ -113,7 +113,7 @@ function ListCard(props) {
             
 
             <Typography ml = "1.2vw">
-                By: {idNamePair.user}
+                By: {top5list.user}
             </Typography>
             
             
@@ -125,19 +125,19 @@ function ListCard(props) {
             </Collapse>
 
             <CardActions>
-                <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, idNamePair._id)}} >
+                <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, top5list._id)}} >
                     Edit
                 </Button>
                 
                 
 
                 <Typography style={{ flex: 1 }}>
-                    Views: {idNamePair.views}
+                    Views: {top5list.views}
                 </Typography>
 
                 <ExpandMore
                     expand={expanded}
-                    onClick={ (event) => {handleExpandClick(event, idNamePair._id)}}
+                    onClick={ (event) => {handleExpandClick(event, top5list._id)}}
                     aria-expanded={expanded}
                     aria-label="show more"
 

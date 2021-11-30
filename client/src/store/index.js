@@ -165,19 +165,13 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
                     async function getListPairs(top5List) {
-                        response = await api.getTop5ListPairs();
+                        response = await api.getTop5ListPairs(auth.user.userName);
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
-                            let userPairsArray = [];
-                            for(let i = 0; i < pairsArray.length;i++){
-                                if(pairsArray[i].email === auth.user.email)
-                                userPairsArray.push(pairsArray[i]);
-                            }
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
-                                    idNamePairs: userPairsArray,
-                            
+                                    idNamePairs: pairsArray,
                                 }
                             });
                         }
@@ -205,8 +199,13 @@ function GlobalStoreContextProvider(props) {
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
-            ownerEmail: auth.user.email
+            ownerEmail: auth.user.email,
+            user: auth.user.userName,
+            likes: 0,
+            dislikes: 0,
+            views: 0,
         };
+
         const response = await api.createTop5List(payload);
         if (response.data.success) {
             let newList = response.data.top5List;
@@ -224,21 +223,15 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
-    store.loadIdNamePairs = async function () {
+    // Gets lists from a given user
+    store.loadIdNamePairs = async function (user) {
         try{
-            const response = await api.getTop5ListPairs();
+            const response = await api.getTop5ListPairs(auth.user.userName);
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
-                let userPairsArray = [];
-                for(let i = 0; i < pairsArray.length;i++){
-                    if(pairsArray[i].email === auth.user.email)
-                        userPairsArray.push(pairsArray[i]);
-                }
-
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: userPairsArray
+                    payload: pairsArray
                 });
             }
             else {

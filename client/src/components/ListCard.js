@@ -91,12 +91,17 @@ function ListCard(props) {
                     {idNamePair.name} 
                 </Typography>
 
-                <IconButton sx={{ mr: "3vw" }}>
+                <IconButton>
                     <ThumbUpOutlinedIcon fontSize="large"/>
                 </IconButton>
-                <IconButton sx={{ mr: "3vw" }}>
+
+                <Typography sx={{ mr: "3vw" }}> {idNamePair.likes} </Typography>
+
+                <IconButton>
                     <ThumbDownOutlinedIcon fontSize="large"/>
                 </IconButton>
+
+                <Typography sx={{ mr: "3vw" }}> {idNamePair.dislikes} </Typography>
 
                 <IconButton onClick={(event) => {
                     if(!open)
@@ -108,7 +113,7 @@ function ListCard(props) {
             
 
             <Typography ml = "1.2vw">
-                By:
+                By: {idNamePair.user}
             </Typography>
             
             
@@ -127,7 +132,7 @@ function ListCard(props) {
                 
 
                 <Typography style={{ flex: 1 }}>
-                    Views: 
+                    Views: {idNamePair.views}
                 </Typography>
 
                 <ExpandMore

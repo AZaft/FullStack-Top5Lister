@@ -199,8 +199,8 @@ function GlobalStoreContextProvider(props) {
             items: ["?", "?", "?", "?", "?"],
             ownerEmail: auth.user.email,
             user: auth.user.userName,
-            likes: 0,
-            dislikes: 0,
+            likes: [],
+            dislikes: [],
             views: 0,
         };
 
@@ -286,15 +286,12 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
-            if(top5List.ownerEmail === auth.user.email){
-                response = await api.updateTop5ListById(top5List._id, top5List);
-                if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.SET_CURRENT_LIST,
-                        payload: top5List
-                    });
-                    //history.push("/top5list/" + top5List._id);
-                }
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: top5List
+                });
+                //history.push("/top5list/" + top5List._id);
             }
         }
     }
@@ -311,6 +308,14 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
                 payload: store.currentList
             });
+        }
+    }
+
+
+    store.updateList = async function (id, top5List) {
+        const response = await api.updateTop5ListById(id, top5List);
+        if (response.data.success) {
+            console.log("updated");
         }
     }
 

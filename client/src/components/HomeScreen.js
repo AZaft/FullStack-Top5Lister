@@ -22,7 +22,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%' }}>
+            <List disablePadding sx={{ width: '98%', left: '1.5%' }}>
             {
                 store.top5Lists.map((list) => (
                     <ListCard

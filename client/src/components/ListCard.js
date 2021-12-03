@@ -33,9 +33,14 @@ function ListCard(props) {
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
     const history = useHistory();
+    const listColor = "#d4d4f5";
 
     const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
+        if(!expanded){
+            top5list.views++;
+            store.updateList(id,top5list);
+        }
         store.setCurrentList(id);
     };
 
@@ -71,10 +76,9 @@ function ListCard(props) {
         </div>
     }
     
-    
-
+    console.log(top5list.published);
     return (
-        <Card  style={{backgroundColor: "#d4d4f5", borderRadius: "10px", marginBottom: "10px"}} >
+        <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#d4d4f5", borderRadius: "10px", marginBottom: "10px"}} >
             <DeleteModal 
                     open={open}
                     setOpen={setOpen}

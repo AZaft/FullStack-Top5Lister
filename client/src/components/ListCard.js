@@ -10,9 +10,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import DeleteModal from './DeleteModal';
 import { useHistory } from 'react-router-dom'
+import AuthContext from '../auth'
 
 
 
@@ -28,12 +31,25 @@ const ExpandMore = styled((props) => {
   }));
 
 function ListCard(props) {
+    const likedOrDisliked = () => {
+        if(top5list.likes.includes(auth.user.userName)){
+            return "liked";
+        }
+        if(top5list.dislikes.includes(auth.user.userName)){
+            return "disliked";
+        }
+        return "";
+    }
+
     const { store } = useContext(GlobalStoreContext);
     const { top5list } = props;
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
+    const { auth } = useContext(AuthContext);
+    const [like, setLike] = useState(likedOrDisliked());
     const history = useHistory();
-    const listColor = "#d4d4f5";
+
+    
 
     const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
@@ -57,7 +73,49 @@ function ListCard(props) {
         store.markListForDeletion(id);
     }
 
+    const handleLike = () => {
+        if(like === "liked"){
+            let index = top5list.likes.indexOf(auth.user.userName);
+            top5list.likes.splice(index, 1);
+            setLike("");
+        }
 
+        if(like === ""){
+            top5list.likes.push(auth.user.userName);
+            setLike("liked");
+        }
+
+        if(like === "disliked"){
+            let index = top5list.dislikes.indexOf(auth.user.userName);
+            top5list.dislikes.splice(index, 1);
+            top5list.likes.push(auth.user.userName);
+            setLike("liked");
+        }
+        store.updateList(top5list._id,top5list);
+    }
+
+    const handleDislike = () => {
+        if(like === "liked"){
+            let index = top5list.likes.indexOf(auth.user.userName);
+            top5list.likes.splice(index, 1);
+            top5list.dislikes.push(auth.user.userName);
+            setLike("disliked");
+        }
+
+        if(like === ""){
+            top5list.dislikes.push(auth.user.userName);
+            setLike("disliked");
+        }
+
+        if(like === "disliked"){
+            let index = top5list.dislikes.indexOf(auth.user.userName);
+            top5list.dislikes.splice(index, 1);
+            setLike("");;
+        }
+        store.updateList(top5list._id,top5list);
+    }
+
+    
     let itemCards = "";
     if(store.currentList){
         let items = store.currentList.items;
@@ -75,8 +133,17 @@ function ListCard(props) {
             <Typography variant="h3" color = "#c8a53b">5. {items[4]}</Typography>
         </div>
     }
-    
-    console.log(top5list.published);
+
+
+    let thumbsUp = <ThumbUpOutlinedIcon fontSize="large"/>;
+    if(like === "liked"){
+        thumbsUp = <ThumbUpIcon fontSize="large"/>;
+    }
+
+    let thumbsDown = <ThumbDownOutlinedIcon fontSize="large"/>;
+    if(like === "disliked"){
+        thumbsDown = <ThumbDownIcon fontSize="large"/>;
+    }
     return (
         <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#d4d4f5", borderRadius: "10px", marginBottom: "10px"}} >
             <DeleteModal 
@@ -95,17 +162,17 @@ function ListCard(props) {
                     {top5list.name} 
                 </Typography>
 
-                <IconButton>
-                    <ThumbUpOutlinedIcon fontSize="large"/>
+                <IconButton onClick={() =>handleLike()}>
+                    {thumbsUp}
                 </IconButton>
 
-                <Typography sx={{ mr: "3vw" }}> {top5list.likes} </Typography>
+                <Typography sx={{ mr: "3vw" }}> {top5list.likes.length} </Typography>
 
-                <IconButton>
-                    <ThumbDownOutlinedIcon fontSize="large"/>
+                <IconButton onClick={() => handleDislike()}>
+                    {thumbsDown}
                 </IconButton>
 
-                <Typography sx={{ mr: "3vw" }}> {top5list.dislikes} </Typography>
+                <Typography sx={{ mr: "3vw" }}> {top5list.dislikes.length} </Typography>
 
                 <IconButton onClick={(event) => {
                     if(!open)

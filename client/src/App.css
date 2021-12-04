@@ -76,7 +76,6 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
-  
 }
 
 #list-selector-heading {

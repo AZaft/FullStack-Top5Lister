@@ -194,6 +194,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
+        let comment = [{user: "Dompyre", comment: "This is a test comment"}]
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
@@ -202,6 +203,7 @@ function GlobalStoreContextProvider(props) {
             likes: [],
             dislikes: [],
             views: 0,
+            comments: comment
         };
 
         const response = await api.createTop5List(payload);

@@ -16,8 +16,9 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import DeleteModal from './DeleteModal';
 import { useHistory } from 'react-router-dom'
 import AuthContext from '../auth'
-
-
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -123,8 +124,7 @@ function ListCard(props) {
         <div style={{
             backgroundColor: "#2c2f70",
             borderRadius: "10px",
-            marginLeft: "1.2vw",
-            width: "50%"
+            marginLeft: "3%"
         }}>
             <Typography variant="h3" color = "#c8a53b">1. {items[0]}</Typography>
             <Typography variant="h3" color = "#c8a53b">2. {items[1]}</Typography>
@@ -132,6 +132,26 @@ function ListCard(props) {
             <Typography variant="h3" color = "#c8a53b">4. {items[3]}</Typography>
             <Typography variant="h3" color = "#c8a53b">5. {items[4]}</Typography>
         </div>
+    }
+
+
+    let comments = "";
+    if(store.currentList){
+        let listComments = top5list.comments
+        comments =
+            <Box sx = {{mr: "2%"}}>
+               
+                    {
+                        
+                        listComments.map((c) => (
+                            <Box sx = {{backgroundColor: "#c8a53b", borderRadius: 2, border: 1}}>
+                                <Typography variant="h7" sx = {{ml: "1%", color: "blue", textDecoration: "underline"}}> {c.user} </Typography>
+                                <Typography variant="h6" ml = "1%"> {c.comment} </Typography>
+                            </Box>
+                        )) 
+                    }
+                
+            </Box>
     }
 
 
@@ -190,9 +210,29 @@ function ListCard(props) {
             
             
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-               
-                {itemCards}
-               
+
+                <Grid 
+                    container spacing={2}
+                    justifyContent="center"
+                    alignItems="flex-end"
+                >
+                    <Grid item xs={6}>
+                        {itemCards}
+                    </Grid>
+                    <Grid item xs={6}>
+                        <div style={{
+                            height: "14em",
+                            overflowY: "scroll"
+                        }}>
+                            {comments}
+                        </div>
+                        <div style = {{backgroundColor: "white" , borderRadius: "8px", marginRight: "3%"}}>
+                            <TextField id="outlined-basic" label="Add Comment" variant="outlined" fullWidth />
+                        </div>
+                        
+                    </Grid>
+                </Grid>
+                
             </Collapse>
 
             <CardActions>

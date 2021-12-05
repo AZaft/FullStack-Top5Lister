@@ -34,6 +34,9 @@ const ExpandMore = styled((props) => {
 function ListCard(props) {
     
     const likedOrDisliked = () => {
+        if(!auth.user){
+            return "";
+        }
         if(top5list.likes.includes(auth.user.userName)){
             return "liked";
         }
@@ -62,7 +65,7 @@ function ListCard(props) {
     
     const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
-        if(!expanded){
+        if(!expanded && top5list.published){
             top5list.views++;
             store.updateList(id,top5list);
         }
@@ -280,7 +283,7 @@ function ListCard(props) {
                 :
                 <div>
                     <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
-                    <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.updatedAt.substring(0,10)}</Typography>
+                    <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.publishDate.substring(0,10)}</Typography>
                 </div>
                 
                 }

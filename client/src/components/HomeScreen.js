@@ -6,21 +6,39 @@ import { IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import ListToolBar from './ListToolBar';
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+    const location = useLocation();
+
+
 
     useEffect(() => {
-        store.loadIdNamePairs();
-    }, [auth.user]);
+        if(auth.user){
+            if(location.pathname === "/home" )
+                store.loadIdNamePairs();
+
+            if(location.pathname === "/all" )
+                store.loadAllLists();
+
+            if(location.pathname === "/community"){
+                store.clearTop5Lists();
+            }
+
+            if(location.pathname === "/user"){
+                store.clearTop5Lists();
+            }
+        }
+    }, [auth.user, location]);
     
     function handleCreateNewList() {
         store.createNewList();
     }
     
     let listCard = "";
-    if (store) {
+    if (store.top5Lists) {
         listCard = 
             <List disablePadding sx={{ width: '98%', left: '1.5%' }}>
             {

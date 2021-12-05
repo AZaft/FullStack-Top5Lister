@@ -21,6 +21,9 @@ const App = () => {
                     <Switch>
                         <Route path="/" exact component={SplashScreen} />
                         <Route path="/home" exact component={HomeScreen} />
+                        <Route path="/all" exact component={HomeScreen} />
+                        <Route path="/user" exact component={HomeScreen} />
+                        <Route path="/community" exact component={HomeScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/top5list/:id" exact component={WorkspaceScreen} />

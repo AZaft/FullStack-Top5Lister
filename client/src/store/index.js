@@ -147,11 +147,18 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.clearTop5Lists = async function(){
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_TOP5LISTS,
+            payload: null
+        });
+    }
+
     store.publishCurrentList = async function(){
 
     }
 
-    // THIS FUNCTION PROCESSES CHANGING A LIST NAME
+    // changes name of current list
     store.changeListName = async function (id, newName) {
         store.currentList.name = newName;
         store.updateCurrentList();
@@ -199,12 +206,12 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    // Gets lists from a given user
-    store.loadIdNamePairs = async function (user) {
+    // loads current user's list
+    store.loadIdNamePairs = async function () {
         try{
             const response = await api.getTop5ListsByUser(auth.user.userName);
             if (response.data.success) {
-                //console.log(top5Lists);
+                
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
                     payload: response.data.top5Lists
@@ -216,7 +223,82 @@ function GlobalStoreContextProvider(props) {
         }catch(err){
 
         }
+    }
+
+    store.loadAllLists = async function () {
+        try{
+            const response = await api.getTop5Lists();
+            if (response.data.success) {
+               
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: response.data.top5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
+    }
+
+    //loads all lists by list name
+    store.loadListsByName = async function(name){
+        try{
+            const response = await api.getTop5ListsByName(name);
+            if (response.data.success) {
+               
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: response.data.top5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
+    }
+
+    //loads user's lists by name
+    store.loadUserListsByName = async function(name){
     
+        try{
+            const response = await api.getTop5ListsByUser(auth.user.userName);
+            if (response.data.success) {
+                let allUserLists = response.data.top5Lists;
+                const newTop5Lists = allUserLists.filter(value => value.name.toLowerCase().startsWith(name.toLowerCase()));
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: newTop5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
+    }
+
+    store.loadListsByUser = async function(user) {
+        try{
+            const response = await api.getTop5ListsByUser(user);
+            if (response.data.success) {
+                
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: response.data.top5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION

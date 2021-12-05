@@ -11,11 +11,12 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 export const createTop5List = (payload) => api.post(`/top5list/`, payload)
-export const getAllTop5Lists = () => api.get(`/top5lists/`)
+export const getTop5Lists = () => api.get(`/top5lists/`)
 export const getTop5ListsByUser = (user) => api.get(`/top5listuser/${user}`)
 export const updateTop5ListById = (id, payload) => api.put(`/top5list/${id}`, payload)
 export const deleteTop5ListById = (id) => api.delete(`/top5list/${id}`)
 export const getTop5ListById = (id) => api.get(`/top5list/${id}`)
+export const getTop5ListsByName = (name) => api.get(`/top5listname/${name}`)
 
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 export const registerUser = (payload) => api.post(`/register/`, payload)
@@ -24,11 +25,12 @@ export const logoutUser = () => api.get(`/logout/`)
 
 const apis = {
     createTop5List,
-    getAllTop5Lists,
+    getTop5Lists,
     getTop5ListsByUser,
     updateTop5ListById,
     deleteTop5ListById,
     getTop5ListById,
+    getTop5ListsByName,
 
     getLoggedIn,
     registerUser,

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,6 +14,9 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FunctionsSharpIcon from '@mui/icons-material/FunctionsSharp';
+import { useHistory, useLocation } from 'react-router-dom'
+import { GlobalStoreContext } from '../store'
+import React, { useContext } from 'react'
 
 const style = {
   background : '#2E3B55'
@@ -32,7 +34,7 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(0),
-    width: '50%',
+    width: '40vw',
   },
 }));
 
@@ -55,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '40vw',
     },
   },
 }));
@@ -63,6 +65,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function ListToolBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
+  const history = useHistory();
+  const location = useLocation();
+  const { store } = useContext(GlobalStoreContext);
 
   const handleSortMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -71,6 +76,46 @@ export default function ListToolBar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleHome = () => {
+    history.push("/home");
+  }
+
+  const handleAllLists = () => {
+    history.push("/all");
+  }
+
+  const handleUserLists = () => {
+    history.push("/user");
+  }
+
+  const handleCommunityLists = () => {
+    history.push("/community");
+  }
+
+  const handleKeyPress = (event) => {
+    if(event.keyCode == 13){
+        let searchBy = event.target.value;
+  
+        if(location.pathname === "/home"){
+          if(searchBy)
+            store.loadUserListsByName(searchBy);
+          else
+            store.loadIdNamePairs();
+        }
+
+        if(location.pathname === "/all"){
+          if(searchBy)
+            store.loadListsByName(searchBy);
+          else
+            store.loadAllLists();
+        }
+
+        if(location.pathname === "/user"){
+          store.loadListsByUser(searchBy);
+        }
+    }
+}
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -108,6 +153,7 @@ export default function ListToolBar() {
             color="inherit"
             aria-label="Home Lists"
             sx={{ mr: 2 }}
+            onClick={handleHome}
           >
             <HomeOutlinedIcon />
           </IconButton>
@@ -117,6 +163,7 @@ export default function ListToolBar() {
             color="inherit"
             aria-label="All Lists"
             sx={{ mr: 2 }}
+            onClick={handleAllLists}
           >
             <PeopleAltOutlinedIcon />
           </IconButton>
@@ -126,6 +173,7 @@ export default function ListToolBar() {
             color="inherit"
             aria-label="User Lists"
             sx={{ mr: 2 }}
+            onClick={handleUserLists}
           >
             <PersonOutlineOutlinedIcon />
           </IconButton>
@@ -136,15 +184,17 @@ export default function ListToolBar() {
             color="inherit"
             aria-label="Community Lists"
             sx={{ mr: 2 }}
+            onClick={handleCommunityLists}
           >
             <FunctionsSharpIcon />
           </IconButton>
           
-          <Search>
+          <Search >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              onKeyDown={handleKeyPress}
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />

@@ -60,6 +60,7 @@ function AuthContextProvider(props) {
     }
 
     auth.getLoggedIn = async function () {
+        try{
             const response = await api.getLoggedIn();
             if (response.status === 200) {
                 authReducer({
@@ -70,6 +71,9 @@ function AuthContextProvider(props) {
                     }
                 });
             }
+        }catch(err){
+            console.log("not logged in");
+        }
     }
 
     auth.registerUser = async function(userData) {

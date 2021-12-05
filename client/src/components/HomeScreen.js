@@ -11,14 +11,14 @@ const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
 
-    useEffect(async () => {
-        let response = await auth.getLoggedIn();
+    useEffect(() => {
         store.loadIdNamePairs();
-    }, []);
+    }, [auth.user]);
     
     function handleCreateNewList() {
         store.createNewList();
     }
+    
     let listCard = "";
     if (store) {
         listCard = 

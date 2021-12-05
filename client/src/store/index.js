@@ -91,7 +91,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     top5Lists: store.top5Lists,
-                    currentList: null,
+                    currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -147,38 +147,14 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
-    // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
-    // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
+    store.publishCurrentList = async function(){
+
+    }
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = async function (id, newName) {
-        if(newName === ""){
-            newName = "?";
-        }
-
-        let response = await api.getTop5ListById(id);
-        if (response.data.success) {
-            let top5List = response.data.top5List;
-            top5List.name = newName;
-            async function updateList(top5List) {
-                response = await api.updateTop5ListById(top5List._id, top5List);
-                if (response.data.success) {
-                    async function getListPairs(top5List) {
-                        response = await api.getTop5ListsByUser(auth.user.userName);
-                        if (response.data.success) {
-                            let top5Lists = response.data.top5Lists;
-                            storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                payload: top5Lists
-                            });
-                        }
-                    }
-                    getListPairs(top5List);
-                }
-            }
-            updateList(top5List)
-        }
+        store.currentList.name = newName;
+        store.updateCurrentList();
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
@@ -194,7 +170,6 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        let comment = [{user: "Dompyre", comment: "This is a test comment"}]
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
@@ -203,7 +178,8 @@ function GlobalStoreContextProvider(props) {
             likes: [],
             dislikes: [],
             views: 0,
-            comments: comment
+            comments: [],
+            published: false
         };
 
         const response = await api.createTop5List(payload);

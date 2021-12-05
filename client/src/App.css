@@ -71,12 +71,16 @@ body {
   background-color: var(--swatch-primary);
 }
 
-#list-selector-list {
+#list-selector-list, #workspace {
   height: 90%;
   display: flex;
   flex-direction: column;
+}
+
+#list-selector-list{
   overflow-y: scroll;
 }
+
 
 #list-selector-heading {
   width: 100%;
@@ -88,24 +92,6 @@ body {
   align-items: center;
   justify-content: center;
 }
-
-#top5-workspace {
-  display: flex;
-}
-
-#edit-numbering{
-  padding-left: 5%;
-  flex: 0;
-}
-
-#edit-items{
-  flex: 1;
-}
-
-.item-number{
-  padding: 8px;
-}
-
 
 .disabled {
   background-color: lightgray;

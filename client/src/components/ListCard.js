@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -32,6 +32,7 @@ const ExpandMore = styled((props) => {
   }));
 
 function ListCard(props) {
+    
     const likedOrDisliked = () => {
         if(top5list.likes.includes(auth.user.userName)){
             return "liked";
@@ -48,10 +49,17 @@ function ListCard(props) {
     const [open, setOpen] = useState(false);
     const { auth } = useContext(AuthContext);
     const [like, setLike] = useState(likedOrDisliked());
+    const [comment, setComment] = useState("");
     const history = useHistory();
 
+    useEffect(() => {
+        let comment = document.getElementById("comment"+ (top5list.comments.length-1));
+        
+        if(comment)
+            comment.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }, [comment])
     
-
+    
     const handleExpandClick = (event, id) => {
         setExpanded(!expanded);
         if(!expanded){
@@ -61,12 +69,10 @@ function ListCard(props) {
         store.setCurrentList(id);
     };
 
-    const handleEditList = (event, id) => {
-        store.setCurrentList(id);
+    const handleEditList = async (event, id) => {
+        let response = await store.setCurrentList(id);
         history.push("/top5list/" + id);
     };
-        
-
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
@@ -116,7 +122,21 @@ function ListCard(props) {
         store.updateList(top5list._id,top5list);
     }
 
-    
+    const handleKeyPress = (event) => {
+        if(event.keyCode == 13){
+            let comment = {user: auth.user.userName, comment: event.target.value};
+            top5list.comments.push(comment);
+            store.updateList(top5list._id,top5list);
+            setComment("");
+            
+        }
+    }
+
+    const handleChange = (event) => {
+       setComment(event.target.value);
+    }
+
+  
     let itemCards = "";
     if(store.currentList){
         let items = store.currentList.items;
@@ -136,24 +156,26 @@ function ListCard(props) {
 
 
     let comments = "";
-    if(store.currentList){
+    if(store.currentList && top5list.published){
         let listComments = top5list.comments
         comments =
             <Box sx = {{mr: "2%"}}>
-               
                     {
+                        listComments.map((c, index) => {
+                            
+                            return(
+                                <Box  id={"comment" + index} sx = {{backgroundColor: "#c8a53b", borderRadius: 2, border: 1, mb: "2%"}}>
+                                    <Typography variant="h7" sx = {{ml: "1%", color: "blue", textDecoration: "underline"}}> {c.user} </Typography>
+                                    <Typography variant="h6" ml = "1%"> {c.comment} </Typography>
+                                </ Box>
+                            );
+                            
+                        })
                         
-                        listComments.map((c) => (
-                            <Box sx = {{backgroundColor: "#c8a53b", borderRadius: 2, border: 1}}>
-                                <Typography variant="h7" sx = {{ml: "1%", color: "blue", textDecoration: "underline"}}> {c.user} </Typography>
-                                <Typography variant="h6" ml = "1%"> {c.comment} </Typography>
-                            </Box>
-                        )) 
                     }
-                
             </Box>
+        
     }
-
 
     let thumbsUp = <ThumbUpOutlinedIcon fontSize="large"/>;
     if(like === "liked"){
@@ -164,8 +186,9 @@ function ListCard(props) {
     if(like === "disliked"){
         thumbsDown = <ThumbDownIcon fontSize="large"/>;
     }
+
     return (
-        <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#d4d4f5", borderRadius: "10px", marginBottom: "10px"}} >
+        <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#fffff1", borderRadius: "10px", marginBottom: "10px", border: "1px solid"}} >
             <DeleteModal 
                     open={open}
                     setOpen={setOpen}
@@ -182,17 +205,26 @@ function ListCard(props) {
                     {top5list.name} 
                 </Typography>
 
+                {top5list.published ? 
                 <IconButton onClick={() =>handleLike()}>
                     {thumbsUp}
                 </IconButton>
-
+                : "" }
+                
+                {top5list.published ?
                 <Typography sx={{ mr: "3vw" }}> {top5list.likes.length} </Typography>
+                : "" }
 
+                {top5list.published ?
                 <IconButton onClick={() => handleDislike()}>
                     {thumbsDown}
                 </IconButton>
+                : "" }
 
+
+                {top5list.published ?
                 <Typography sx={{ mr: "3vw" }}> {top5list.dislikes.length} </Typography>
+                : "" }
 
                 <IconButton onClick={(event) => {
                     if(!open)
@@ -203,8 +235,9 @@ function ListCard(props) {
             </div>
             
 
-            <Typography ml = "1.2vw">
-                By: {top5list.user}
+            <Typography ml = "1.2vw" display="inline"> By: </Typography>
+            <Typography  display="inline" style={{ textDecoration: 'underline', color: 'blue' }}>
+                {top5list.user}
             </Typography>
             
             
@@ -220,31 +253,54 @@ function ListCard(props) {
                         {itemCards}
                     </Grid>
                     <Grid item xs={6}>
-                        <div style={{
+                        <div id="comment-div" style={{
                             height: "14em",
                             overflowY: "scroll"
                         }}>
                             {comments}
                         </div>
+
+                        {top5list.published ?
                         <div style = {{backgroundColor: "white" , borderRadius: "8px", marginRight: "3%"}}>
-                            <TextField id="outlined-basic" label="Add Comment" variant="outlined" fullWidth />
+                            <TextField id="outlined-basic" value = {comment} label="Add Comment" variant="outlined" fullWidth onChange={handleChange} onKeyDown={handleKeyPress} />
                         </div>
-                        
+                        :
+                        ""}
+
                     </Grid>
                 </Grid>
                 
             </Collapse>
 
             <CardActions>
+                {!top5list.published?
                 <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, top5list._id)}} >
                     Edit
                 </Button>
+                :
+                <div>
+                    <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
+                    <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.updatedAt.substring(0,10)}</Typography>
+                </div>
                 
+                }
                 
+                {top5list.published ?
+                    <Typography>
+                        Views: 
+                    </Typography>
+                    
+                : 
+                <Typography style={{ flex: 1 }}></Typography>}
 
+                {top5list.published ?
+                    <Typography style={{ flex: 1 , color: "red"}}>
+                        {top5list.views}
+                    </Typography>
+                : 
                 <Typography style={{ flex: 1 }}>
-                    Views: {top5list.views}
-                </Typography>
+                    
+                </Typography> }
 
                 <ExpandMore
                     expand={expanded}

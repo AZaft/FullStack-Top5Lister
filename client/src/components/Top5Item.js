@@ -28,9 +28,16 @@ function Top5Item(props) {
         if (event.code === "Enter") {
             let { index } = props;
             let text = event.target.value;
-            store.updateItem(index, text);
+            store.currentList.items[index] = text;
             toggleEdit();
         }
+    }
+
+    function handleBlur(event) {
+        let { index } = props;
+        let text = event.target.value;
+        store.currentList.items[index] = text;
+        toggleEdit();
     }
 
 
@@ -45,35 +52,25 @@ function Top5Item(props) {
                     id={'item-' + (index+1)}
                     key={props.key}
                     className={itemClass}
-                    sx={{ display: 'flex', p: 1 }}
-                    style={{
-                        
-                    }}
+                    sx={{ display: 'flex', backgroundColor: "#d4af37", borderRadius: 2, mt: "1%", mb: "1%"}}
+                    onDoubleClick={handleToggleEdit}
                 >
-                <Box sx={{ p: 1 }}>
-                    <IconButton disabled={store.isItemEditActive} onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{}}  />
-                    </IconButton>
-                </Box>
-                    <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+                    <Box sx={{ pt: "1%", pb: "1%"}}>{store.currentList.items[index]}</Box>
                 </ListItem>
         )
     } else{
 
         return(
                 <TextField
-                    margin="normal"
                     required
                     fullWidth
                     id={'item-' + (index+1)}
-                    label="Top 5 Item Name"
                     name="name"
-                    autoComplete="Top 5 Item Name"
                     className='list-card'
                     onKeyPress={handleKeyPress}
+                    onBlur={handleBlur}
                     defaultValue={props.text}
-                    inputProps={{style: {fontSize: 48}}}
-                    InputLabelProps={{style: {fontSize: 24}}}
+                    sx={{ display: 'flex', backgroundColor: "#d4af37", borderRadius: 2, mb: "1%"}}
                     autoFocus
                 />      
         )

@@ -17,11 +17,8 @@ function Top5Item(props) {
 
     function toggleEdit() {
         let newActive = !editActive;
-        if (newActive) {
-            store.setIsItemEditActive();
-        }
         setEditActive(newActive);
-        
+        store.checkIfPublishable();
     }
 
     function handleKeyPress(event) {
@@ -53,7 +50,7 @@ function Top5Item(props) {
                     key={props.key}
                     className={itemClass}
                     sx={{ display: 'flex', backgroundColor: "#d4af37", borderRadius: 2, mt: "1%", mb: "1%"}}
-                    onDoubleClick={handleToggleEdit}
+                    onClick={handleToggleEdit}
                 >
                     <Box sx={{ pt: "1%", pb: "1%"}}>{store.currentList.items[index]}</Box>
                 </ListItem>

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Top5Item from './Top5Item.js'
 import List from '@mui/material/List';
 import { Box, Typography, IconButton } from '@mui/material'
@@ -14,22 +14,39 @@ import Button from '@mui/material/Button';
 function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
-
+    const [disableSave, setdisableSave] = useState(false);
     
     window.onload  = function() {
         history.push("/home");
     }
 
+
+    useEffect(() => {
+        store.checkIfPublishable(store.currentList.name);
+    },[store.currentList.name])
+  
+
     const handleKeyPress = (event) => {
         if(event.keyCode == 13){
+            if(event.target.value === ""){
+                setdisableSave(true);
+                return;
+            }else setdisableSave(false);
+
             store.currentList.name = event.target.value;
             event.target.blur();
         }
     }
 
     const handleBlur = (event) =>{
+        if(event.target.value === ""){
+            setdisableSave(true);
+            return;
+        }else setdisableSave(false);
         store.currentList.name = event.target.value;
+        store.checkIfPublishable(event.target.value);
     }
+
 
     const handlePublish =(event) => {
         store.publishCurrentList();
@@ -93,8 +110,8 @@ function WorkspaceScreen() {
                 </Grid>
 
                 <div style={{position: "absolute", bottom: "0", right:"0", marginRight: "2%", marginBottom: "1%", width:"20%"}}>
-                    <Button onClick={handleSave} size="large" sx={{ border:"1px solid", color: "black", backgroundColor: "gray"}} variant="contained">Save</Button>
-                    <Button onClick={handlePublish} size="large" sx={{float: "right", border:"1px solid", color: "black", backgroundColor: "gray"}} variant="contained">Publish</Button>
+                    <Button disabled={disableSave} onClick={handleSave} size="large" sx={{ border:"1px solid", color: "black", backgroundColor: "gray"}} variant="contained">Save</Button>
+                    <Button disabled={!store.publishable || disableSave} onClick={handlePublish} size="large" sx={{float: "right", border:"1px solid", color: "black", backgroundColor: "gray"}} variant="contained">Publish</Button>
                 </div>
                 
             </div>

@@ -112,7 +112,17 @@ export default function ListToolBar() {
         }
 
         if(location.pathname === "/user"){
-          store.loadListsByUser(searchBy);
+          if(searchBy)
+            store.loadListsByUser(searchBy);
+          else
+            store.clearTop5Lists();
+        }
+
+        if(location.pathname === "/community"){
+          if(searchBy)
+            store.loadCommunityListsByName(searchBy);
+          else
+            store.loadAllCommunityLists();
         }
     }
 }

@@ -32,10 +32,7 @@ function WorkspaceScreen() {
     }
 
     const handlePublish =(event) => {
-        store.currentList.published = true;
-        store.currentList.publishDate = new Date();
-        store.updateCurrentList();
-        history.push("/home");
+        store.publishCurrentList();
     }
 
     const handleSave =(event) => {

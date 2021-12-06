@@ -155,7 +155,73 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.publishCurrentList = async function(){
+        let currentList = store.currentList;
+        currentList.published = true;
+        currentList.publishDate = new Date();
+        store.updateCurrentList();
 
+        try {
+            const response = await api.getTop5CommunityList(currentList.name);
+            if(response.data.success){
+                let communityList = response.data.top5List;   
+                let s = 5;
+                for(let i = 0; i < currentList.items.length;i++){
+                    if(communityList.communityScore[currentList.items[i]])
+                        communityList.communityScore[currentList.items[i]] += s;
+                    else
+                        communityList.communityScore[currentList.items[i]] = s
+                    s--;
+                }
+
+                let itemScores = communityList.communityScore;
+
+                let sortable = [];
+                for (let item in itemScores) {
+                    sortable.push([item, itemScores[item]]);
+                }
+
+                sortable.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+
+                let itemScoresSorted = {}
+                sortable.forEach(function(item){
+                    itemScoresSorted[item[0]]=item[1]
+                })
+
+                communityList.communityScore = itemScoresSorted;
+                
+                store.updateList(communityList._id, communityList);
+            } 
+        } catch(err){
+            let community = {};
+            let s = 5;
+            for(let i = 0; i < currentList.items.length;i++){
+                community[currentList.items[i]] = s;
+                s--;
+            }
+            
+            let payload = {
+                name: currentList.name,
+                items: currentList.items,
+                ownerEmail: currentList.ownerEmail,
+                user: "@community",
+                likes: [],
+                dislikes: [],
+                views: 0,
+                comments: [],
+                published: true,
+                community: true,
+                communityScore: community
+            };
+            const response2 = await api.createTop5List(payload);
+            if (response2.data.success) {
+                console.log("Community List created");
+            }
+        }
+
+
+        history.push("/home");
     }
 
     // changes name of current list
@@ -186,7 +252,8 @@ function GlobalStoreContextProvider(props) {
             dislikes: [],
             views: 0,
             comments: [],
-            published: false
+            published: false,
+            community: false,
         };
 
         const response = await api.createTop5List(payload);
@@ -229,10 +296,30 @@ function GlobalStoreContextProvider(props) {
         try{
             const response = await api.getTop5Lists();
             if (response.data.success) {
-               
+                let allLists = response.data.top5Lists;
+                const newTop5Lists = allLists.filter(value => !value.community);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
-                    payload: response.data.top5Lists
+                    payload: newTop5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
+    }
+
+    store.loadAllCommunityLists = async function() {
+        try{
+            const response = await api.getTop5Lists();
+            if (response.data.success) {
+                let allLists = response.data.top5Lists;
+                const newTop5Lists = allLists.filter(value => value.community);
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: newTop5Lists
                 });
             }
             else {
@@ -248,10 +335,11 @@ function GlobalStoreContextProvider(props) {
         try{
             const response = await api.getTop5ListsByName(name);
             if (response.data.success) {
-               
+                let userLists = response.data.top5Lists;
+                const newTop5Lists = userLists.filter(value => !value.community);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
-                    payload: response.data.top5Lists
+                    payload: newTop5Lists
                 });
             }
             else {
@@ -262,9 +350,9 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+
     //loads user's lists by name
     store.loadUserListsByName = async function(name){
-    
         try{
             const response = await api.getTop5ListsByUser(auth.user.userName);
             if (response.data.success) {
@@ -287,10 +375,31 @@ function GlobalStoreContextProvider(props) {
         try{
             const response = await api.getTop5ListsByUser(user);
             if (response.data.success) {
-                
+                let userLists = response.data.top5Lists;
+                const newTop5Lists = userLists.filter(value => value.published);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
-                    payload: response.data.top5Lists
+                    payload: newTop5Lists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }catch(err){
+
+        }
+    }
+
+    //loads community lists that start with name
+    store.loadCommunityListsByName = async function(name){
+        try{
+            const response = await api.getTop5ListsByName(name);
+            if (response.data.success) {
+                let userLists = response.data.top5Lists;
+                const newTop5Lists = userLists.filter(value => value.community);
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                    payload: newTop5Lists
                 });
             }
             else {

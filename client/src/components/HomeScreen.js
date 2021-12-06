@@ -30,6 +30,10 @@ const HomeScreen = () => {
             if(location.pathname === "/user"){
                 store.clearTop5Lists();
             }
+
+            if(location.pathname === "/community"){
+                store.loadAllCommunityLists();
+            }
         }
     }, [auth.user, location]);
     

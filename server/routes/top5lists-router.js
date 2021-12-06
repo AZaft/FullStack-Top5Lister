@@ -11,6 +11,7 @@ router.get('/top5list/:id', auth.verify, Top5ListController.getTop5ListById)
 router.get('/top5lists', auth.verify, Top5ListController.getTop5Lists)
 router.get('/top5listuser/:user', auth.verify, Top5ListController.getTop5ListsByUser)
 router.get('/top5listname/:name', auth.verify, Top5ListController.getTop5ListsByName)
+router.get('/top5listcommunity/:name', auth.verify, Top5ListController.getTop5CommunityList)
 
 router.post('/register', UserController.registerUser)
 router.get('/loggedIn', UserController.getLoggedIn)

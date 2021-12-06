@@ -130,36 +130,56 @@ function ListCard(props) {
             let comment = {user: auth.user.userName, comment: event.target.value};
             top5list.comments.push(comment);
             store.updateList(top5list._id,top5list);
-            setComment("");
-            
+            setComment(event.target.value);
+            event.target.value = "";
         }
     }
 
-    const handleChange = (event) => {
-       setComment(event.target.value);
-    }
 
-  
-    let itemCards = "";
-    if(store.currentList){
-        let items = store.currentList.items;
+    
+    let items = top5list.items;
+    let itemCards =
+    <div style={{
+        backgroundColor: "#2c2f70",
+        borderRadius: "10px",
+        marginLeft: "3%"
+    }}>
+        <Typography variant="h3" color = "#c8a53b">1. {items[0]}</Typography>
+        <Typography variant="h3" color = "#c8a53b">2. {items[1]}</Typography>
+        <Typography variant="h3" color = "#c8a53b">3. {items[2]}</Typography>
+        <Typography variant="h3" color = "#c8a53b">4. {items[3]}</Typography>
+        <Typography variant="h3" color = "#c8a53b">5. {items[4]}</Typography>
+    </div>
+
+    if(top5list.community){
+        let items = top5list.communityScore;
         itemCards =
         <div style={{
             backgroundColor: "#2c2f70",
             borderRadius: "10px",
             marginLeft: "3%"
         }}>
-            <Typography variant="h3" color = "#c8a53b">1. {items[0]}</Typography>
-            <Typography variant="h3" color = "#c8a53b">2. {items[1]}</Typography>
-            <Typography variant="h3" color = "#c8a53b">3. {items[2]}</Typography>
-            <Typography variant="h3" color = "#c8a53b">4. {items[3]}</Typography>
-            <Typography variant="h3" color = "#c8a53b">5. {items[4]}</Typography>
+            <Typography variant="h3" color = "#c8a53b">1. {Object.keys(items)[0]}</Typography>
+            <Typography ml = "6%" variant="h7" color = "#c8a53b"> ({items[Object.keys(items)[0]]} votes) </Typography>
+
+            <Typography variant="h3" color = "#c8a53b">2. {Object.keys(items)[1]}</Typography>
+            <Typography ml = "6%" variant="h7" color = "#c8a53b"> ({items[Object.keys(items)[1]]} votes) </Typography>
+
+            <Typography variant="h3" color = "#c8a53b">3. {Object.keys(items)[2]}</Typography>
+            <Typography ml = "6%" variant="h7" color = "#c8a53b"> ({items[Object.keys(items)[2]]} votes) </Typography>
+
+            <Typography variant="h3" color = "#c8a53b">4. {Object.keys(items)[3]}</Typography>
+            <Typography ml = "6%" variant="h7" color = "#c8a53b"> ({items[Object.keys(items)[3]]} votes) </Typography>
+
+            <Typography variant="h3" color = "#c8a53b">5. {Object.keys(items)[4]}</Typography>
+            <Typography ml = "6%" variant="h7" color = "#c8a53b"> ({items[Object.keys(items)[4]]} votes) </Typography>
         </div>
     }
+    
 
 
     let comments = "";
-    if(store.currentList && top5list.published){
+    if(top5list.published){
         let listComments = top5list.comments
         comments =
             <Box sx = {{mr: "2%"}}>
@@ -177,7 +197,6 @@ function ListCard(props) {
                         
                     }
             </Box>
-        
     }
 
     let thumbsUp = <ThumbUpOutlinedIcon fontSize="large"/>;
@@ -188,6 +207,26 @@ function ListCard(props) {
     let thumbsDown = <ThumbDownOutlinedIcon fontSize="large"/>;
     if(like === "disliked"){
         thumbsDown = <ThumbDownIcon fontSize="large"/>;
+    }
+
+    let dateInfo = "";
+    if(top5list.community){
+        dateInfo = 
+            <div>
+                <Typography display="inline" sx={{ ml: "0.6vw"}}> Updated: </Typography>
+                <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.updatedAt.substring(0,10)}</Typography>
+            </div>
+    } else if(top5list.published){
+        dateInfo = 
+            <div>
+                <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
+                <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.publishDate.substring(0,10)}</Typography>
+            </div>
+    } else {
+        dateInfo = 
+            <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, top5list._id)}} >
+                Edit
+            </Button>
     }
 
     return (
@@ -265,7 +304,7 @@ function ListCard(props) {
 
                         {top5list.published ?
                         <div style = {{backgroundColor: "white" , borderRadius: "8px", marginRight: "3%"}}>
-                            <TextField id="outlined-basic" value = {comment} label="Add Comment" variant="outlined" fullWidth onChange={handleChange} onKeyDown={handleKeyPress} />
+                            <TextField id="outlined-basic" label="Add Comment" variant="outlined" fullWidth onKeyDown={handleKeyPress} />
                         </div>
                         :
                         ""}
@@ -276,17 +315,7 @@ function ListCard(props) {
             </Collapse>
 
             <CardActions>
-                {!top5list.published?
-                <Button size="small" color="error" sx={{ mr: "50vw" }} onClick={(event) => {handleEditList(event, top5list._id)}} >
-                    Edit
-                </Button>
-                :
-                <div>
-                    <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
-                    <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.publishDate.substring(0,10)}</Typography>
-                </div>
-                
-                }
+                {dateInfo}
                 
                 {top5list.published ?
                     <Typography>

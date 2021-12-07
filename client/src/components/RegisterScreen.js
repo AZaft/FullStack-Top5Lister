@@ -54,8 +54,7 @@ export default function RegisterScreen() {
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
         })
-            .then(setMessage(""), handleClose())
-            .catch(error => setMessage(error.message), handleOpen());
+            .catch(error => setMessage(error.message) + handleOpen());
         
     };
 

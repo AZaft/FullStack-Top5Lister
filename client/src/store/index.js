@@ -412,10 +412,53 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 store.loadIdNamePairs();
                 history.push("/home");
+                
+                store.updateCommunityList(listToDelete);
             }
         }catch(err){
             store.loadIdNamePairs();
             history.push("/home");
+        }
+    }
+
+    store.updateCommunityList = async function(listDeleted) {
+        try {
+            const response = await api.getTop5CommunityList(listDeleted.name);
+            if(response.data.success){
+                let communityList = response.data.top5List;   
+                let s = 5;
+                for(let i = 0; i < listDeleted.items.length;i++){
+                    if(communityList.communityScore[listDeleted.items[i]])
+                        communityList.communityScore[listDeleted.items[i]] -= s;
+                    s--;
+                }
+
+                let itemScores = communityList.communityScore;
+
+                let sortable = [];
+                for (let item in itemScores) {
+                    sortable.push([item, itemScores[item]]);
+                }
+
+                sortable.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+
+                let itemScoresSorted = {}
+                sortable.forEach(function(item){
+                    itemScoresSorted[item[0]]=item[1]
+                })
+
+                communityList.communityScore = itemScoresSorted;
+                console.log(itemScoresSorted[Object.keys(itemScoresSorted)[4]]);
+                store.updateList(communityList._id, communityList);
+
+                if(itemScoresSorted[Object.keys(itemScoresSorted)[4]] === 0){
+                    store.deleteList(communityList);
+                    console.log("deleted list");
+                }
+            } 
+        } catch(err){
         }
     }
 
@@ -517,7 +560,13 @@ function GlobalStoreContextProvider(props) {
     store.sortLists = function(sortBy){
 
         if(sortBy === "dateDsc"){
-            const sortedList = store.top5Lists.sort(function(a, b){return new Date(b.publishDate) - new Date(a.publishDate)});
+            const sortedList = store.top5Lists.sort(function(a, b)
+            {
+                if(!a.community)
+                    return new Date(b.publishDate) - new Date(a.publishDate);
+                else
+                    return new Date(b.updatedAt) - new Date(a.updatedAt);
+            });
             storeReducer({
                 type: GlobalStoreActionType.LOAD_TOP5LISTS,
                 payload: sortedList
@@ -525,7 +574,14 @@ function GlobalStoreContextProvider(props) {
         }
 
         if(sortBy === "dateAsc"){
-            const sortedList = store.top5Lists.sort(function(a, b){return new Date(a.publishDate) - new Date(b.publishDate)});
+            const sortedList = store.top5Lists.sort(function(a, b)
+            {
+                if(!a.community)
+                    return new Date(a.publishDate) - new Date(b.publishDate);
+                else
+                    return new Date(a.updatedAt) - new Date(b.updatedAt);
+            });
+            
             storeReducer({
                 type: GlobalStoreActionType.LOAD_TOP5LISTS,
                 payload: sortedList

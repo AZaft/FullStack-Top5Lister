@@ -33,6 +33,7 @@ const ExpandMore = styled((props) => {
 
 function ListCard(props) {
     
+    
     const likedOrDisliked = () => {
         if(!auth.user){
             return "";
@@ -54,12 +55,11 @@ function ListCard(props) {
     const [like, setLike] = useState(likedOrDisliked());
     const [comment, setComment] = useState("");
     const history = useHistory();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     useEffect(() => {
         let comment = document.getElementById("comment"+ (top5list.comments.length-1));
         
-        if(comment)
-            comment.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }, [comment])
     
     
@@ -211,16 +211,21 @@ function ListCard(props) {
 
     let dateInfo = "";
     if(top5list.community){
+        let updateDate = new Date(top5list.updatedAt);
+        updateDate = months[updateDate.getMonth()] + " " + updateDate.getMonth() + "," + updateDate.getFullYear();
+
         dateInfo = 
             <div>
                 <Typography display="inline" sx={{ ml: "0.6vw"}}> Updated: </Typography>
-                <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.updatedAt.substring(0,10)}</Typography>
+                <Typography display="inline"sx={{mr: "53vw", color: 'green' }}>{updateDate}</Typography>
             </div>
     } else if(top5list.published){
+        let publishDate = new Date(top5list.publishDate);
+        publishDate = months[publishDate.getMonth()] + " " + publishDate.getMonth() + "," + publishDate.getFullYear();
         dateInfo = 
             <div>
                 <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
-                <Typography display="inline"sx={{mr: "53vw", textDecoration: 'underline', color: 'green' }}>{top5list.publishDate.substring(0,10)}</Typography>
+                <Typography display="inline"sx={{mr: "53vw", color: 'green' }}>{publishDate}</Typography>
             </div>
     } else {
         dateInfo = 
@@ -239,6 +244,7 @@ function ListCard(props) {
                     {top5list.user}
                 </Typography>;
     }
+
 
     return (
         <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#fffff1", borderRadius: "10px", marginBottom: "10px", border: "1px solid"}} >

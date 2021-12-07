@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
@@ -41,21 +41,28 @@ export default function LoginScreen() {
     const handleOpen = () => {
         setOpen(true);
     };
+
     const handleClose = () => {
        setOpen(false);
     };
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+        return () => {
+            handleClose();
+        }
+        
+    }, [])
+    
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
       
-        
         auth.loginUser({
             user: data.get('user'),
             password: data.get('password'),
         })
-            .then(setMessage(""), handleClose())
-            .catch(error => setMessage(error.message), handleOpen())
+            .catch(error => setMessage(error.message) + handleOpen())
     };
 
     let errorBox = 

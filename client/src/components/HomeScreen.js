@@ -20,8 +20,6 @@ const HomeScreen = () => {
         if(location.pathname === "/home" ){
             if(auth.user)
                 store.loadIdNamePairs();
-            else
-                history.push("/");
         }
 
         if(location.pathname === "/all" )
@@ -76,9 +74,10 @@ const HomeScreen = () => {
             <Typography variant="h3">Your Lists</Typography>
         </div>;
     } else {
+        let currentTab = location.pathname.substring(1);
         statusBar =
         <div id="list-selector-heading">
-            <Typography variant="h3">{location.pathname} Lists</Typography>
+            <Typography variant="h3">{currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Lists</Typography>
         </div>;
     }
     

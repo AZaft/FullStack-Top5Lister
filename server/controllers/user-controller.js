@@ -106,20 +106,20 @@ registerUser = async (req, res) => {
 
 loginUser = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        if (!email || !password ) {
+        const {user, password} = req.body;
+        if (!user || !password ) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
         }
         
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ userName: user });
 
         if (!existingUser) {
             return res
                 .status(400)
                 .json({
-                    errorMessage: "User with that email does not exist."
+                    errorMessage: "User with that username does not exist."
                 });
         }else{
             const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash);

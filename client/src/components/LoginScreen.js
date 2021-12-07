@@ -51,7 +51,7 @@ export default function LoginScreen() {
       
         
         auth.loginUser({
-            email: data.get('email'),
+            user: data.get('user'),
             password: data.get('password'),
         })
             .then(setMessage(""), handleClose())
@@ -97,10 +97,10 @@ export default function LoginScreen() {
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address/ Username"
-                    name="email"
-                    autoComplete="email"
+                    id="user"
+                    label="Username"
+                    name="user"
+                    autoComplete="user"
                     autoFocus
                 />
                 <TextField

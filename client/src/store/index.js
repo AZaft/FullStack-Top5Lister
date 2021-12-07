@@ -277,7 +277,7 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getTop5Lists();
             if (response.data.success) {
                 let allLists = response.data.top5Lists;
-                const newTop5Lists = allLists.filter(value => !value.community);
+                const newTop5Lists = allLists.filter(value => !value.community).sort(function(a, b){return new Date(b.publishDate) - new Date(a.publishDate)});;
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
                     payload: newTop5Lists
@@ -296,7 +296,7 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getTop5Lists();
             if (response.data.success) {
                 let allLists = response.data.top5Lists;
-                const newTop5Lists = allLists.filter(value => value.community);
+                const newTop5Lists = allLists.filter(value => value.community).sort(function(a, b){return new Date(b.updatedAt) - new Date(a.updatedAt)});
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_TOP5LISTS,
                     payload: newTop5Lists
@@ -512,6 +512,50 @@ function GlobalStoreContextProvider(props) {
                 store.setPublishable(true) 
             else store.setPublishable(false);
         } else store.setPublishable(false);
+    }
+
+    store.sortLists = function(sortBy){
+
+        if(sortBy === "dateDsc"){
+            const sortedList = store.top5Lists.sort(function(a, b){return new Date(b.publishDate) - new Date(a.publishDate)});
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                payload: sortedList
+            });
+        }
+
+        if(sortBy === "dateAsc"){
+            const sortedList = store.top5Lists.sort(function(a, b){return new Date(a.publishDate) - new Date(b.publishDate)});
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                payload: sortedList
+            });
+        }
+
+        if(sortBy === "likes"){
+            const sortedList = store.top5Lists.sort(function(a, b){return b.likes.length - a.likes.length});
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                payload: sortedList
+            });
+        }
+
+        if(sortBy === "dislikes"){
+            const sortedList = store.top5Lists.sort(function(a, b){return b.dislikes.length - a.dislikes.length});
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                payload: sortedList
+            });
+        }
+
+        if(sortBy === "views"){
+            const sortedList = store.top5Lists.sort(function(a, b){return b.views - a.views});
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_TOP5LISTS,
+                payload: sortedList
+            });
+        }
+
     }
 
     return (

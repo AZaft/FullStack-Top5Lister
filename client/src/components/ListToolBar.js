@@ -17,6 +17,7 @@ import FunctionsSharpIcon from '@mui/icons-material/FunctionsSharp';
 import { useHistory, useLocation } from 'react-router-dom'
 import { GlobalStoreContext } from '../store'
 import React, { useContext } from 'react'
+import AuthContext from '../auth'
 
 const style = {
   background : '#2E3B55'
@@ -68,12 +69,39 @@ export default function ListToolBar() {
   const history = useHistory();
   const location = useLocation();
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
+  const disableBar = location.pathname !== "/home" && location.pathname !== "/all" && location.pathname !== "/user" && location.pathname !== "/community";
 
   const handleSortMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSortViews = () => {
+    store.sortLists("views");
+    setAnchorEl(null);
+  };
+
+  const handleSortLikes = () => {
+    store.sortLists("likes");
+    setAnchorEl(null);
+  };
+
+  const handleSortDislikes = () => {
+    store.sortLists("dislikes");
+    setAnchorEl(null);
+  };
+
+  const handleSortDateAsc = () => {
+    store.sortLists("dateAsc");
+    setAnchorEl(null);
+  };
+
+  const handleSortDateDsc = () => {
+    store.sortLists("dateDsc");
     setAnchorEl(null);
   };
 
@@ -144,20 +172,20 @@ export default function ListToolBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Publish Date (Newest)</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Publish Date (Oldest)</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Views</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Likes</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Dislikes</MenuItem>
+      <MenuItem onClick={handleSortDateDsc}>Publish Date (Newest)</MenuItem>
+      <MenuItem onClick={handleSortDateAsc}>Publish Date (Oldest)</MenuItem>
+      <MenuItem onClick={handleSortViews}>Views</MenuItem>
+      <MenuItem onClick={handleSortLikes}>Likes</MenuItem>
+      <MenuItem onClick={handleSortDislikes}>Dislikes</MenuItem>
     </Menu>
   );
 
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box  sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ background: 'transparent', color: "black", boxShadow: 'none', }}>
         <Toolbar>
           <IconButton
+            disabled = {!auth.user || disableBar}
             size="large"
             edge="start"
             color="inherit"
@@ -168,6 +196,7 @@ export default function ListToolBar() {
             <HomeOutlinedIcon />
           </IconButton>
           <IconButton
+            disabled = {disableBar}
             size="large"
             edge="start"
             color="inherit"
@@ -178,6 +207,7 @@ export default function ListToolBar() {
             <PeopleAltOutlinedIcon />
           </IconButton>
           <IconButton
+            disabled = {disableBar}
             size="large"
             edge="start"
             color="inherit"
@@ -189,6 +219,7 @@ export default function ListToolBar() {
           </IconButton>
 
           <IconButton
+            disabled = {disableBar}
             size="large"
             edge="start"
             color="inherit"
@@ -199,11 +230,12 @@ export default function ListToolBar() {
             <FunctionsSharpIcon />
           </IconButton>
           
-          <Search >
+          <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              disabled = {disableBar}
               onKeyDown={handleKeyPress}
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
@@ -215,6 +247,7 @@ export default function ListToolBar() {
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
+              disabled = {disableBar}
               size="large"
               edge="end"
               aria-label="sort options"

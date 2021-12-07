@@ -22,7 +22,7 @@ export default function SplashScreen() {
     };
 
     const handleGuest = () => {
-        
+        history.push("/all");
     };
     
     return (

@@ -11,13 +11,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Avatar from '@mui/material/Avatar';
-
+import { useHistory } from 'react-router-dom'
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const { store } = useContext(GlobalStoreContext);
+    const history = useHistory();
     
 
     const handleProfileMenuOpen = (event) => {
@@ -88,10 +89,6 @@ export default function AppBanner() {
             return <AccountCircle />;
     }
 
-    function handleHomePage() {
-        store.loadIdNamePairs();
-    }
-
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" style={{ background: '#e0e0e0' }}>
@@ -103,7 +100,11 @@ export default function AppBanner() {
                         sx={{ display: { xs: 'none', sm: 'block', }, flex: 1}} 
                                             
                     >
-                        <Link onClick={handleHomePage}style={{ textDecoration: 'none', color: '#d5b341' }} to='/home'>T<sup>5</sup>L</Link>
+                        {auth.user ?
+                        <Link style={{ textDecoration: 'none', color: '#d5b341' }} to='/home'>T<sup>5</sup>L</Link> :
+                        <Link style={{ textDecoration: 'none', color: '#d5b341' }} to='/'>T<sup>5</sup>L</Link>
+                        }
+                        
                     </Typography>
                     
                     <Box >

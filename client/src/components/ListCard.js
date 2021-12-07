@@ -229,6 +229,17 @@ function ListCard(props) {
             </Button>
     }
 
+    let listUser = "";
+    let listUser2 = "";
+    if(!top5list.community){
+        listUser = 
+                <Typography ml = "1.2vw" display="inline"> By: </Typography>
+        listUser2 =
+                <Typography  display="inline" style={{ textDecoration: 'underline', color: 'blue' }}>
+                    {top5list.user}
+                </Typography>;
+    }
+
     return (
         <Card style={{ backgroundColor: top5list.published ? "#d4d4f5" : "#fffff1", borderRadius: "10px", marginBottom: "10px", border: "1px solid"}} >
             <DeleteModal 
@@ -248,7 +259,7 @@ function ListCard(props) {
                 </Typography>
 
                 {top5list.published ? 
-                <IconButton onClick={() =>handleLike()}>
+                <IconButton disabled={!auth.user} onClick={() =>handleLike()}>
                     {thumbsUp}
                 </IconButton>
                 : "" }
@@ -258,7 +269,7 @@ function ListCard(props) {
                 : "" }
 
                 {top5list.published ?
-                <IconButton onClick={() => handleDislike()}>
+                <IconButton disabled={!auth.user} onClick={() => handleDislike()}>
                     {thumbsDown}
                 </IconButton>
                 : "" }
@@ -268,7 +279,7 @@ function ListCard(props) {
                 <Typography sx={{ mr: "3vw" }}> {top5list.dislikes.length} </Typography>
                 : "" }
 
-                <IconButton onClick={(event) => {
+                <IconButton disabled={!auth.user ||(auth.user.userName !== top5list.user)} onClick={(event) => {
                     if(!open)
                         handleDeleteList(event, top5list._id)
                     }}>
@@ -277,13 +288,9 @@ function ListCard(props) {
             </div>
             
 
-            <Typography ml = "1.2vw" display="inline"> By: </Typography>
-            <Typography  display="inline" style={{ textDecoration: 'underline', color: 'blue' }}>
-                {top5list.user}
-            </Typography>
-            
-            
-            
+            {listUser}
+            {listUser2}
+
             <Collapse in={expanded} timeout="auto" unmountOnExit>
 
                 <Grid 
@@ -304,7 +311,7 @@ function ListCard(props) {
 
                         {top5list.published ?
                         <div style = {{backgroundColor: "white" , borderRadius: "8px", marginRight: "3%"}}>
-                            <TextField id="outlined-basic" label="Add Comment" variant="outlined" fullWidth onKeyDown={handleKeyPress} />
+                            <TextField disabled={!auth.user} id="outlined-basic" label="Add Comment" variant="outlined" fullWidth onKeyDown={handleKeyPress} />
                         </div>
                         :
                         ""}

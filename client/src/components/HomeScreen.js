@@ -6,34 +6,37 @@ import { IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import ListToolBar from './ListToolBar';
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const location = useLocation();
-
+    const history = useHistory();
 
 
     useEffect(() => {
-        if(auth.user){
-            if(location.pathname === "/home" )
+
+        if(location.pathname === "/home" ){
+            if(auth.user)
                 store.loadIdNamePairs();
+            else
+                history.push("/");
+        }
 
-            if(location.pathname === "/all" )
-                store.loadAllLists();
+        if(location.pathname === "/all" )
+            store.loadAllLists();
 
-            if(location.pathname === "/community"){
-                store.clearTop5Lists();
-            }
+        if(location.pathname === "/community"){
+            store.clearTop5Lists();
+        }
 
-            if(location.pathname === "/user"){
-                store.clearTop5Lists();
-            }
+        if(location.pathname === "/user"){
+            store.clearTop5Lists();
+        }
 
-            if(location.pathname === "/community"){
-                store.loadAllCommunityLists();
-            }
+        if(location.pathname === "/community"){
+            store.loadAllCommunityLists();
         }
     }, [auth.user, location]);
     
@@ -56,6 +59,30 @@ const HomeScreen = () => {
             }
             </List>;
     }
+
+    let statusBar = "";
+
+    if(location.pathname === "/home"){
+        statusBar =
+        <div id="list-selector-heading">
+        <IconButton 
+            disabled = {!(location.pathname === "/home")}
+            id="add-list-button"
+            onClick={handleCreateNewList}
+            style={{opacity: !(location.pathname === "/home") ? "0.3" : "1"}}
+        >
+            <AddIcon sx={{ fontSize: 75, color: 'black'}}/>
+        </IconButton>
+            <Typography variant="h3">Your Lists</Typography>
+        </div>;
+    } else {
+        statusBar =
+        <div id="list-selector-heading">
+            <Typography variant="h3">{location.pathname} Lists</Typography>
+        </div>;
+    }
+    
+
     return (
         <div id="top5-list-selector">
             <ListToolBar/>
@@ -66,15 +93,7 @@ const HomeScreen = () => {
                 }
             </div>
 
-            <div id="list-selector-heading">
-            <IconButton 
-                id="add-list-button"
-                onClick={handleCreateNewList}
-            >
-                <AddIcon sx={{ fontSize: 75, color: 'black'}}/>
-            </IconButton>
-                <Typography variant="h3">Your Lists</Typography>
-            </div>
+            {statusBar}
 
         </div>)
 }

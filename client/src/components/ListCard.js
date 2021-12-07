@@ -212,7 +212,7 @@ function ListCard(props) {
     let dateInfo = "";
     if(top5list.community){
         let updateDate = new Date(top5list.updatedAt);
-        updateDate = months[updateDate.getMonth()] + " " + updateDate.getMonth() + "," + updateDate.getFullYear();
+        updateDate = months[updateDate.getMonth()] + " " + updateDate.getDate() + "," + updateDate.getFullYear();
 
         dateInfo = 
             <div>
@@ -221,7 +221,7 @@ function ListCard(props) {
             </div>
     } else if(top5list.published){
         let publishDate = new Date(top5list.publishDate);
-        publishDate = months[publishDate.getMonth()] + " " + publishDate.getMonth() + "," + publishDate.getFullYear();
+        publishDate = months[publishDate.getMonth()] + " " + publishDate.getDate() + "," + publishDate.getFullYear();
         dateInfo = 
             <div>
                 <Typography display="inline" sx={{ ml: "0.6vw"}}> Published: </Typography>
